@@ -27,4 +27,8 @@ export const GlobalStyle = createGlobalStyle`
     border: none;
     cursor: pointer;
   }
+
+  a:focus {
+    outline: none;
+  }
 `
