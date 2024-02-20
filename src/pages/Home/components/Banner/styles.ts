@@ -13,6 +13,13 @@ export const BgImg = styled.img`
   height: 34rem;
   object-fit: cover;
 `
+export const GradientOverlay = styled.svg`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+`
 
 export const BannerContent = styled.div`
   height: 34rem;
