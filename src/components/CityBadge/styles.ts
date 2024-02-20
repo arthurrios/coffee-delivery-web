@@ -11,7 +11,7 @@ export const CityBadgeContainer = styled.div`
   background: ${({ theme }) => theme.COLORS.PURPLE_LIGHT};
   border-radius: 6px;
 `
-export const Text = styled.text`
+export const Text = styled.p`
   color: ${({ theme }) => theme.COLORS.PURPLE_DARK};
   ${FONTS.TEXT_S}
 `

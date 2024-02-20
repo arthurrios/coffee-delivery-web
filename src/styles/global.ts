@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  :focus {
+  input:focus {
     outline: 0;
     box-shadow: 0 0 0 2px ${({ theme }) => theme.COLORS.YELLOW_DARK};
   }
@@ -26,9 +26,14 @@ export const GlobalStyle = createGlobalStyle`
   button {
     border: none;
     cursor: pointer;
+
+    &:focus {
+      border: none;
+    }
   }
 
   a:focus {
     outline: none;
+    cursor: pointer;
   }
 `

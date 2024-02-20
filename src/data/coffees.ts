@@ -1,106 +1,134 @@
 import { CoffeeDTO } from '../dtos/CoffeeDTO'
+import espressoImage from '../assets/coffees/espresso.png'
+import americanoImage from '../assets/coffees/americano.png'
+import creamyEspressoImage from '../assets/coffees/creamy-espresso.png'
+import icedCoffeeImage from '../assets/coffees/iced-coffee.png'
+import milkyEspressoImage from '../assets/coffees/coffee-and-milk.png'
+import latteImage from '../assets/coffees/latte.png'
+import capuccinoImage from '../assets/coffees/capuccino.png'
+import macchiatoImage from '../assets/coffees/macchiato.png'
+import mocaccinoImage from '../assets/coffees/mochaccino.png'
+import hotChocolateImage from '../assets/coffees/hot-chocolate.png'
+import cubanImage from '../assets/coffees/cuban.png'
+import hawaiianImage from '../assets/coffees/hawaiian.png'
+import arabicImage from '../assets/coffees/arabic.png'
+import irishImage from '../assets/coffees/irish.png'
 
 export const coffees: CoffeeDTO[] = [
   {
+    id: '1',
     name: 'Espresso',
     description: 'Traditional coffee made with hot water and ground beans.',
-    category: ['traditional'],
+    categories: ['traditional'],
     price: 3.5,
-    image: '../assets/coffees/espresso.png',
+    image: espressoImage,
   },
   {
+    id: '2',
     name: 'Americano',
     description: 'Diluted espresso, less intense than the traditional one.',
-    category: ['traditional'],
+    categories: ['traditional'],
     price: 3.5,
-    image: '../assets/coffees/americano.png',
+    image: americanoImage,
   },
   {
+    id: '3',
     name: 'Creamy',
     description: 'Traditional espresso coffee with creamy foam.',
-    category: ['traditional'],
+    categories: ['traditional'],
     price: 3.5,
-    image: '../assets/coffees/creamy-espresso.png',
+    image: creamyEspressoImage,
   },
   {
+    id: '4',
     name: 'Cold',
     description: 'Beverage prepared with espresso and ice cubes.',
-    category: ['traditional', 'cold'],
+    categories: ['traditional', 'cold'],
     price: 3.5,
-    image: '../assets/coffees/iced-coffee.png',
+    image: icedCoffeeImage,
   },
   {
+    id: '5',
     name: 'Milky',
     description: 'Half and half of traditional espresso with steamed milk.',
-    category: ['traditional', 'with milk'],
+    categories: ['traditional', 'with milk'],
     price: 3.5,
-    image: '../assets/coffees/milky-espresso.png',
+    image: milkyEspressoImage,
   },
   {
+    id: '6',
     name: 'Latte',
     description:
       'A shot of espresso with twice the amount of milk and creamy foam.',
-    category: ['traditional', 'with milk'],
+    categories: ['traditional', 'with milk'],
     price: 3.5,
-    image: '../assets/coffees/latte.png',
+    image: latteImage,
   },
   {
+    id: '7',
     name: 'Capuccino',
     description:
       'Drink with cinnamon made of equal parts of coffee, milk, and foam.',
-    category: ['traditional', 'with milk'],
+    categories: ['traditional', 'with milk'],
     price: 3.5,
-    image: '../assets/coffees/capuccino.png',
+    image: capuccinoImage,
   },
   {
+    id: '8',
     name: 'Macchiato',
     description: 'Espresso mixed with a little hot milk and foam.',
-    category: ['traditional', 'with milk'],
+    categories: ['traditional', 'with milk'],
     price: 3.5,
-    image: '../assets/coffees/macchiato.png',
+    image: macchiatoImage,
   },
   {
+    id: '9',
     name: 'Mocaccino',
     description: 'Espresso with chocolate syrup, little milk, and foam.',
-    category: ['traditional', 'with milk'],
+    categories: ['traditional', 'with milk'],
     price: 3.5,
-    image: '../assets/coffees/mochaccino.png',
+    image: mocaccinoImage,
   },
   {
+    id: '10',
     name: 'Hot Cocoa',
     description:
       'Beverage made with chocolate dissolved in hot milk and coffee.',
-    category: ['special', 'with milk'],
+    categories: ['special', 'with milk'],
     price: 3.5,
-    image: '../assets/coffees/hot-chocolate.png',
+    image: hotChocolateImage,
   },
   {
+    id: '11',
     name: 'Cuban',
     description: 'Cold espresso drink with rum, cream, and mint.',
-    category: ['special', 'alcoholic', 'cold'],
+    categories: ['special', 'alcoholic', 'cold'],
     price: 3.5,
-    image: '../assets/coffees/cuban.png',
+    image: cubanImage,
   },
   {
+    id: '12',
     name: 'Hawaiian',
     description: 'Sweetened beverage prepared with coffee and coconut milk.',
-    category: ['special'],
+    categories: ['special'],
     price: 3.5,
-    image: '../assets/coffees/hawaiian.png',
+    image: hawaiianImage,
   },
   {
+    id: '13',
     name: 'Arabic',
     description: 'Beverage prepared with Arabica coffee beans and spices.',
-    category: ['special'],
+    categories: ['special'],
     price: 3.5,
-    image: '../assets/coffees/arabic.png',
+    image: arabicImage,
   },
   {
+    id: '14',
     name: 'Irish',
     description:
       'Beverage based on coffee, Irish whiskey, sugar, and whipped cream.',
-    category: ['special', 'alcoholic'],
+    categories: ['special', 'alcoholic'],
     price: 3.5,
-    image: '../assets/coffees/irish.png',
+    image: irishImage,
   },
 ]
