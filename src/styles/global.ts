@@ -8,11 +8,6 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  input:focus {
-    outline: 0;
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.COLORS.YELLOW_DARK};
-  }
-
   body {
     background: ${({ theme }) => theme.COLORS.BACKGROUND};
     color: ${({ theme }) => theme.COLORS.BASE_TEXT};
