@@ -26,7 +26,12 @@ export const AddressFormContainer = styled(BaseContainer)`
   min-width: 40rem;
 `
 export const PaymentContainer = styled(BaseContainer)``
-export const CartContainer = styled(BaseContainer)``
+export const CartContainer = styled(BaseContainer)`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 28rem;
+`
 
 export const ContainerTitle = styled.div`
   display: flex;
@@ -37,9 +42,6 @@ export const ContainerTitle = styled.div`
   svg {
     height: 1.375rem;
     width: 1.375rem;
-  }
-
-  > div {
   }
 
   h3 {
@@ -68,4 +70,28 @@ export const PaymentMethods = styled.div`
   align-items: center;
   gap: 12px;
   width: 100%;
+`
+export const Line = styled.div`
+  width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.COLORS.BASE_BUTTON};
+`
+export const LabelWithPrice = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h1 {
+    ${FONTS.TEXT_L}
+    font-weight: bold;
+    color: ${({ theme }) => theme.COLORS.BASE_SUBTITLE};
+  }
+
+  h4 {
+    ${FONTS.TEXT_S}
+  }
+`
+export const OrderTotal = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `

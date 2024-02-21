@@ -1,7 +1,8 @@
+import { HTMLAttributes } from 'react'
 import { BaseButton, Container, Number } from './styles'
 import { Minus, Plus } from '@phosphor-icons/react'
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   quantity: number
   increaseQuantity: () => void
   decreaseQuantity: () => void
@@ -11,9 +12,10 @@ export function QuantityCounter({
   quantity,
   increaseQuantity,
   decreaseQuantity,
+  ...props
 }: Props) {
   return (
-    <Container>
+    <Container {...props}>
       <BaseButton onClick={decreaseQuantity}>
         <Minus size={14} weight="bold" />
       </BaseButton>
