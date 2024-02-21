@@ -6,11 +6,16 @@ import {
   ContainerTitle,
   InputFormContainer,
   PaymentContainer,
+  PaymentMethods,
 } from './styles'
 import { useTheme } from 'styled-components'
 import { Input } from '../../components/Input'
+import { Select } from '../../components/Select'
+import { useState } from 'react'
 
 export function Checkout() {
+  const [paymentMethod, setPaymentMethod] = useState('')
+
   const { COLORS } = useTheme()
 
   return (
@@ -74,6 +79,23 @@ export function Checkout() {
               </span>
             </div>
           </ContainerTitle>
+          <PaymentMethods>
+            <Select
+              option="creditCard"
+              isSelected={paymentMethod === 'creditCard'}
+              onClick={() => setPaymentMethod('creditCard')}
+            />
+            <Select
+              option="debitCard"
+              isSelected={paymentMethod === 'debitCard'}
+              onClick={() => setPaymentMethod('debitCard')}
+            />
+            <Select
+              option="cash"
+              isSelected={paymentMethod === 'cash'}
+              onClick={() => setPaymentMethod('cash')}
+            />
+          </PaymentMethods>
         </PaymentContainer>
       </div>
 

@@ -63,3 +63,9 @@ export const InputFormContainer = styled.div`
     'number complement complement'
     'country city state';
 `
+export const PaymentMethods = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+`
