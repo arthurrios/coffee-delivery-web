@@ -50,3 +50,8 @@ export const Container = styled.div`
     font-style: italic;
   }
 `
+export const ErrorMessage = styled.span`
+  ${FONTS.TEXT_XS}
+  color: red;
+  font-weight: 400;
+`

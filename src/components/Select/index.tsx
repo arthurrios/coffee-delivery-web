@@ -1,14 +1,17 @@
 import { Bank, CreditCard, Money } from '@phosphor-icons/react'
 import { Container } from './styles'
 import { useTheme } from 'styled-components'
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, LegacyRef, forwardRef } from 'react'
 
 export interface SelectProps extends InputHTMLAttributes<HTMLInputElement> {
   option: 'creditCard' | 'debitCard' | 'cash'
   isSelected?: boolean
 }
 
-export function Select({ option, isSelected, ...props }: SelectProps) {
+export const Select = forwardRef(function Select(
+  { isSelected, option, ...props }: SelectProps,
+  ref: LegacyRef<HTMLInputElement>,
+) {
   const { COLORS } = useTheme()
 
   let icon
@@ -32,9 +35,10 @@ export function Select({ option, isSelected, ...props }: SelectProps) {
   }
 
   return (
-    <Container type="radio" option={option} data-state={isSelected} {...props}>
+    <Container option={option} data-state={isSelected}>
+      <input type="radio" ref={ref} {...props} />
       {icon}
       <h4>{title}</h4>
     </Container>
   )
-}
+})

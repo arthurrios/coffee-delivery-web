@@ -17,7 +17,12 @@ export const Container = styled.button`
   text-transform: uppercase;
   color: ${({ theme }) => theme.COLORS.WHITE};
 
-  &:hover {
+  &:hover(:not):disabled {
     background: ${({ theme }) => theme.COLORS.YELLOW_DARK};
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 `

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { FONTS } from '../../styles/themes/default'
 import { SelectProps } from '.'
 
-export const Container = styled.button<SelectProps>`
+export const Container = styled.label<SelectProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,6 +13,7 @@ export const Container = styled.button<SelectProps>`
   background: ${({ theme }) => theme.COLORS.BASE_BUTTON};
   border-radius: 6px;
   border: 1px solid transparent;
+  cursor: pointer;
 
   &[data-state='true'] {
     border: 1px solid ${({ theme }) => theme.COLORS.PURPLE};
@@ -23,6 +24,10 @@ export const Container = styled.button<SelectProps>`
 
   &:hover[data-state='false'] {
     background: ${({ theme }) => theme.COLORS.BASE_HOVER};
+  }
+
+  input {
+    display: none;
   }
 
   h4 {

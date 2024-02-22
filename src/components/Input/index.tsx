@@ -2,19 +2,27 @@ import {
   InputHTMLAttributes,
   forwardRef,
   LegacyRef,
-  HTMLAttributes,
   useState,
   FocusEvent,
+  HTMLProps,
 } from 'react'
-import { Box, Container } from './styles'
+import { Box, Container, ErrorMessage } from './styles'
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   optional?: boolean
-  containerProps: HTMLAttributes<HTMLDivElement>
+  containerProps: HTMLProps<HTMLDivElement>
+  errorMessage?: string
 }
 
 export const Input = forwardRef(function Input(
-  { optional, containerProps, onFocus, onBlur, ...props }: InputProps,
+  {
+    optional,
+    containerProps,
+    onFocus,
+    onBlur,
+    errorMessage,
+    ...props
+  }: InputProps,
   ref: LegacyRef<HTMLInputElement>,
 ) {
   const [isFocused, setIsFocused] = useState(false)
@@ -29,12 +37,15 @@ export const Input = forwardRef(function Input(
     onBlur?.(event)
   }
 
+  console.log(errorMessage)
+
   return (
     <Box {...containerProps}>
       <Container data-state={isFocused ? 'focused' : 'blurred'}>
         <input onFocus={handleFocus} onBlur={handleBlur} ref={ref} {...props} />
         {optional ? <span>Optional</span> : null}
       </Container>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </Box>
   )
 })

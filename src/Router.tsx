@@ -4,6 +4,8 @@ import { Home } from './pages/Home'
 import { Checkout } from './pages/Checkout'
 import { OrderConfirmed } from './pages/OrderConfirmed'
 
+export const AppRouteProps = {}
+
 export const router = createBrowserRouter([
   {
     path: '/',

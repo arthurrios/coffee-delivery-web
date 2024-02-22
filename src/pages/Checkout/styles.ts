@@ -7,15 +7,13 @@ export const CheckoutContainer = styled.div`
 
   margin: 2.5rem auto 0;
   max-width: 70rem;
-
-  > div {
-    h2 {
-      ${FONTS.TITLE_XS}
-      color: ${({ theme }) => theme.COLORS.BASE_SUBTITLE};
-      margin-bottom: 1rem;
-    }
-  }
 `
+export const SectionTitle = styled.h2`
+  ${FONTS.TITLE_XS}
+  color: ${({ theme }) => theme.COLORS.BASE_SUBTITLE};
+  margin-bottom: 1rem;
+`
+
 export const BaseContainer = styled.div`
   padding: 2.5rem;
   border-radius: 6px;

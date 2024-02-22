@@ -9,7 +9,9 @@ import {
   Line,
   OrderTotal,
   PaymentContainer,
+  PaymentErrorMessage,
   PaymentMethods,
+  SectionTitle,
 } from './styles'
 import { useTheme } from 'styled-components'
 import { Input } from '../../components/Input'
@@ -22,6 +24,26 @@ import latteImage from '../../assets/coffees/latte.png'
 import { CartItemDTO } from '../../dtos/CartItemDTO.ts'
 import { Button } from '../../components/Button/index.tsx'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const newOrderFormValidationSchema = z.object({
+  zip: z.number({ invalid_type_error: 'Enter a valid 5-digit ZIP code' }),
+  street: z.string().min(1, 'Enter a street'),
+  number: z
+    .number({ invalid_type_error: 'Enter only numbers' })
+    .min(1, 'Enter a number'),
+  complement: z.string(),
+  country: z.string().min(1, 'Enter a country'),
+  city: z.string().min(1, 'Enter a city'),
+  state: z.string().min(1, 'Enter a state'),
+  paymentMethod: z.enum(['creditCard', 'debitCard', 'cash'], {
+    invalid_type_error: 'Select payment method',
+  }),
+})
+
+type NewOrderFormData = z.infer<typeof newOrderFormValidationSchema>
 
 export function Checkout() {
   const [cartItems, setCartItems] = useState<CartItemDTO[]>([
@@ -42,24 +64,40 @@ export function Checkout() {
       image: latteImage,
     },
   ])
-  const [paymentMethod, setPaymentMethod] = useState('')
   const [orderTotal, setOrderTotal] = useState(33.2)
 
+  // const selectRef = useRef<HTMLInputElement>(null)
+
   const { COLORS } = useTheme()
+
+  const newOrderForm = useForm<NewOrderFormData>({
+    resolver: zodResolver(newOrderFormValidationSchema),
+  })
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors, isValid },
+  } = newOrderForm
 
   const deliveryFee = 3.5
 
   const navigate = useNavigate()
 
-  function handleConfirmOrder() {
-    navigate('/order-confirmed')
-  }
+  const selectedPaymentMethod = watch('paymentMethod')
+
+  const isFormValid = Object.values(newOrderForm.formState.errors).every(
+    (error) => !error,
+  )
+
+  function handleConfirmOrder() {}
 
   return (
     <CheckoutContainer>
-      <div>
-        <h2>Complete your order</h2>
-
+      <form id="order" onSubmit={handleSubmit(handleConfirmOrder)}>
+        <SectionTitle>Complete your order</SectionTitle>
         <AddressFormContainer>
           <ContainerTitle>
             <MapPinLine color={COLORS.YELLOW_DARK} />
@@ -74,34 +112,49 @@ export function Checkout() {
             <Input
               placeholder="ZIP"
               containerProps={{ style: { gridArea: 'zip' } }}
+              {...register('zip', { valueAsNumber: true })}
+              maxLength={5}
+              errorMessage={errors.zip?.message}
             />
 
             <Input
               placeholder="Street"
               containerProps={{ style: { gridArea: 'street' } }}
+              {...register('street')}
+              errorMessage={errors.street?.message}
             />
 
             <Input
               placeholder="Number"
               containerProps={{ style: { gridArea: 'number' } }}
+              {...register('number', { valueAsNumber: true })}
+              errorMessage={errors.number?.message}
             />
             <Input
               placeholder="Complement"
               containerProps={{ style: { gridArea: 'complement' } }}
               optional
+              {...register('complement')}
+              errorMessage={errors.complement?.message}
             />
 
             <Input
               placeholder="Country"
               containerProps={{ style: { gridArea: 'country' } }}
+              {...register('country')}
+              errorMessage={errors.country?.message}
             />
             <Input
               placeholder="City"
               containerProps={{ style: { gridArea: 'city' } }}
+              {...register('city')}
+              errorMessage={errors.city?.message}
             />
             <Input
               placeholder="State"
               containerProps={{ style: { gridArea: 'state' } }}
+              {...register('state')}
+              errorMessage={errors.state?.message}
             />
           </InputFormContainer>
         </AddressFormContainer>
@@ -119,25 +172,30 @@ export function Checkout() {
           <PaymentMethods>
             <Select
               option="creditCard"
-              isSelected={paymentMethod === 'creditCard'}
-              onClick={() => setPaymentMethod('creditCard')}
+              value="creditCard"
+              isSelected={selectedPaymentMethod === 'creditCard'}
+              {...register('paymentMethod')}
             />
+
             <Select
               option="debitCard"
-              isSelected={paymentMethod === 'debitCard'}
-              onClick={() => setPaymentMethod('debitCard')}
+              value="debitCard"
+              isSelected={selectedPaymentMethod === 'debitCard'}
+              {...register('paymentMethod')}
             />
+
             <Select
               option="cash"
-              isSelected={paymentMethod === 'cash'}
-              onClick={() => setPaymentMethod('cash')}
+              value="cash"
+              isSelected={selectedPaymentMethod === 'cash'}
+              {...register('paymentMethod')}
             />
           </PaymentMethods>
         </PaymentContainer>
-      </div>
+      </form>
 
       <div>
-        <h2>Selected items</h2>
+        <SectionTitle>Selected items</SectionTitle>
         <CartContainer>
           {cartItems.map((coffee) => {
             return (
@@ -154,14 +212,30 @@ export function Checkout() {
             </LabelWithPrice>
             <LabelWithPrice>
               <h4>Delivery fee</h4>
-              <span>$ {deliveryFee.toFixed(2)}</span>
+              <span>
+                {new Intl.NumberFormat('pt-br', {
+                  currency: 'USD',
+                  style: 'currency',
+                }).format(Number(deliveryFee.toFixed(2)))}
+              </span>
             </LabelWithPrice>
             <LabelWithPrice>
               <h1>Total</h1>
-              <h1>$ {orderTotal.toFixed(2)}</h1>
+              <h1>
+                {new Intl.NumberFormat('pt-br', {
+                  currency: 'USD',
+                  style: 'currency',
+                }).format(Number(orderTotal.toFixed(2)))}
+              </h1>
             </LabelWithPrice>
           </OrderTotal>
-          <Button onClick={handleConfirmOrder} title="confirm order" />
+          <Button
+            type="submit"
+            form="order"
+            disabled={!isValid}
+            onClick={handleConfirmOrder}
+            title="confirm order"
+          />
         </CartContainer>
       </div>
     </CheckoutContainer>
