@@ -9,7 +9,6 @@ import {
   Line,
   OrderTotal,
   PaymentContainer,
-  PaymentErrorMessage,
   PaymentMethods,
   SectionTitle,
 } from './styles'
@@ -19,14 +18,12 @@ import { Select } from '../../components/Select'
 import { Fragment, useState } from 'react'
 import { CartItem } from '../../components/CartItem'
 
-import espressoImage from '../../assets/coffees/espresso.png'
-import latteImage from '../../assets/coffees/latte.png'
-import { CartItemDTO } from '../../dtos/CartItemDTO.ts'
 import { Button } from '../../components/Button/index.tsx'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useCart } from '../../hooks/useCart.tsx'
 
 const newOrderFormValidationSchema = z.object({
   zip: z.number({ invalid_type_error: 'Enter a valid 5-digit ZIP code' }),
@@ -46,24 +43,7 @@ const newOrderFormValidationSchema = z.object({
 type NewOrderFormData = z.infer<typeof newOrderFormValidationSchema>
 
 export function Checkout() {
-  const [cartItems, setCartItems] = useState<CartItemDTO[]>([
-    {
-      id: '1',
-      name: 'Espresso',
-      quantity: 2,
-      price: 7,
-      itemTotal: 0,
-      image: espressoImage,
-    },
-    {
-      id: '2',
-      name: 'Latte',
-      quantity: 3,
-      price: 10.5,
-      itemTotal: 0,
-      image: latteImage,
-    },
-  ])
+  const { cart } = useCart()
   const [orderTotal, setOrderTotal] = useState(33.2)
 
   // const selectRef = useRef<HTMLInputElement>(null)
@@ -87,10 +67,6 @@ export function Checkout() {
   const navigate = useNavigate()
 
   const selectedPaymentMethod = watch('paymentMethod')
-
-  const isFormValid = Object.values(newOrderForm.formState.errors).every(
-    (error) => !error,
-  )
 
   function handleConfirmOrder() {}
 
@@ -197,10 +173,10 @@ export function Checkout() {
       <div>
         <SectionTitle>Selected items</SectionTitle>
         <CartContainer>
-          {cartItems.map((coffee) => {
+          {cart.map((coffee) => {
             return (
               <Fragment key={coffee.id}>
-                <CartItem data={coffee} />
+                <CartItem coffee={coffee} />
                 <Line />
               </Fragment>
             )
@@ -213,7 +189,7 @@ export function Checkout() {
             <LabelWithPrice>
               <h4>Delivery fee</h4>
               <span>
-                {new Intl.NumberFormat('pt-br', {
+                {new Intl.NumberFormat('en', {
                   currency: 'USD',
                   style: 'currency',
                 }).format(Number(deliveryFee.toFixed(2)))}
@@ -222,7 +198,7 @@ export function Checkout() {
             <LabelWithPrice>
               <h1>Total</h1>
               <h1>
-                {new Intl.NumberFormat('pt-br', {
+                {new Intl.NumberFormat('en', {
                   currency: 'USD',
                   style: 'currency',
                 }).format(Number(orderTotal.toFixed(2)))}

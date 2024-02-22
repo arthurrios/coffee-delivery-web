@@ -1,47 +1,50 @@
-import { useState } from 'react'
 import { CartItemDTO } from '../../dtos/CartItemDTO'
 import { QuantityCounter } from '../QuantityCounter'
 import { Container, ItemControls, RemoveButton } from './styles'
 import { Trash } from '@phosphor-icons/react'
+import { useCart } from '../../hooks/useCart'
 
 interface CartItemProps {
-  data: CartItemDTO
+  coffee: CartItemDTO
 }
 
-export function CartItem({ data }: CartItemProps) {
-  const [quantity, setQuantity] = useState(data.quantity)
+export function CartItem({ coffee }: CartItemProps) {
+  const { increaseItemQuantity, decreaseItemQuantity, removeItemFromCart } =
+    useCart()
 
   function handleIncreaseQuantity() {
-    setQuantity((state) => state + 1)
+    increaseItemQuantity(coffee.id)
   }
 
   function handleDecreaseQuantity() {
-    if (quantity > 1) {
-      setQuantity((state) => state - 1)
-    }
+    decreaseItemQuantity(coffee.id)
+  }
+
+  function handleRemoveItem(itemId: string) {
+    removeItemFromCart(itemId)
   }
 
   return (
     <Container>
       <div>
-        <img src={data.image} alt="Coffee Image" />
+        <img src={coffee.image} alt="Coffee Image" />
         <div>
-          <h4>{data.name}</h4>
+          <h4>{coffee.name}</h4>
           <ItemControls>
             <QuantityCounter
-              quantity={quantity}
+              quantity={coffee.quantity}
               increaseQuantity={handleIncreaseQuantity}
               decreaseQuantity={handleDecreaseQuantity}
               style={{ height: '2rem' }}
             />
-            <RemoveButton>
+            <RemoveButton onClick={() => handleRemoveItem(coffee.id)}>
               <Trash />
               <span>Remove</span>
             </RemoveButton>
           </ItemControls>
         </div>
       </div>
-      <span>$ {data.price.toFixed(2)}</span>
+      <span>$ {coffee.price.toFixed(2)}</span>
     </Container>
   )
 }

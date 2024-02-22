@@ -13,12 +13,14 @@ import {
 } from './styles'
 import { useTheme } from 'styled-components'
 import { useState } from 'react'
+import { useCart } from '../../hooks/useCart'
 
 interface CardProps {
   data: CoffeeDTO
 }
 
 export function Card({ data }: CardProps) {
+  const { addNewItemToCart } = useCart()
   const { COLORS } = useTheme()
 
   const [quantity, setQuantity] = useState(1)
@@ -35,6 +37,13 @@ export function Card({ data }: CardProps) {
 
   function handleAddToCart() {
     setQuantity(1)
+    addNewItemToCart({
+      id: data.id,
+      image: data.image,
+      name: data.name,
+      price: data.price,
+      quantity,
+    })
   }
 
   return (
