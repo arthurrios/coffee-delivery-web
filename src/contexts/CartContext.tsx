@@ -3,7 +3,13 @@ import { CartItemDTO } from '../dtos/CartItemDTO'
 import { useNavigate } from 'react-router-dom'
 import { NewOrderFormData } from '../pages/Checkout'
 import { cartReducer } from '../reducers/cart'
-import { ActionTypes } from '../reducers/actions'
+import {
+  addNewItemToCartAction,
+  removeItemFromCartAction,
+  increaseItemQuantityAction,
+  decreaseItemQuantityAction,
+  checkoutAction,
+} from '../reducers/actions'
 
 export interface Order extends NewOrderFormData {
   id: number
@@ -54,49 +60,23 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   }, [cartState])
 
   function addNewItemToCart(item: CartItemDTO) {
-    dispatch({
-      type: ActionTypes.ADD_NEW_ITEM,
-      payload: {
-        item,
-      },
-    })
+    dispatch(addNewItemToCartAction(item))
   }
 
   function removeItemFromCart(itemId: string) {
-    dispatch({
-      type: ActionTypes.REMOVE_ITEM,
-      payload: {
-        itemId,
-      },
-    })
+    dispatch(removeItemFromCartAction(itemId))
   }
 
   function increaseItemQuantity(itemId: string) {
-    dispatch({
-      type: ActionTypes.INCREASE_ITEM_QUANTITY,
-      payload: {
-        itemId,
-      },
-    })
+    dispatch(increaseItemQuantityAction(itemId))
   }
 
   function decreaseItemQuantity(itemId: string) {
-    dispatch({
-      type: ActionTypes.DECREASE_ITEM_QUANTITY,
-      payload: {
-        itemId,
-      },
-    })
+    dispatch(decreaseItemQuantityAction(itemId))
   }
 
   function checkout(order: NewOrderFormData) {
-    dispatch({
-      type: ActionTypes.CHECKOUT_SUCCESS,
-      payload: {
-        order,
-        callback: navigate,
-      },
-    })
+    dispatch(checkoutAction(order, navigate))
   }
 
   return (
