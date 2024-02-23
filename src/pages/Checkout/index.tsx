@@ -15,7 +15,7 @@ import {
 import { useTheme } from 'styled-components'
 import { Input } from '../../components/Input'
 import { Select } from '../../components/Select'
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { CartItem } from '../../components/CartItem'
 
 import { Button } from '../../components/Button/index.tsx'
@@ -44,11 +44,19 @@ type NewOrderFormData = z.infer<typeof newOrderFormValidationSchema>
 
 export function Checkout() {
   const { cart } = useCart()
-  const [orderTotal, setOrderTotal] = useState(33.2)
-
-  // const selectRef = useRef<HTMLInputElement>(null)
 
   const { COLORS } = useTheme()
+
+  const itemsTotalArray = cart.map((item) => item.price * item.quantity)
+
+  const itemsTotalValue = itemsTotalArray.reduce(
+    (total, item) => total + item,
+    0,
+  )
+
+  const deliveryFee = cart.length === 0 ? 0 : 3.5
+
+  const orderTotal = itemsTotalValue + deliveryFee
 
   const newOrderForm = useForm<NewOrderFormData>({
     resolver: zodResolver(newOrderFormValidationSchema),
@@ -61,8 +69,6 @@ export function Checkout() {
     reset,
     formState: { errors, isValid },
   } = newOrderForm
-
-  const deliveryFee = 3.5
 
   const navigate = useNavigate()
 
@@ -184,25 +190,15 @@ export function Checkout() {
           <OrderTotal>
             <LabelWithPrice>
               <h4>Items total</h4>
-              <span>$ 29.70</span>
+              <span>$ {itemsTotalValue.toFixed(2)}</span>
             </LabelWithPrice>
             <LabelWithPrice>
               <h4>Delivery fee</h4>
-              <span>
-                {new Intl.NumberFormat('en', {
-                  currency: 'USD',
-                  style: 'currency',
-                }).format(Number(deliveryFee.toFixed(2)))}
-              </span>
+              <span>$ {deliveryFee.toFixed(2)}</span>
             </LabelWithPrice>
             <LabelWithPrice>
               <h1>Total</h1>
-              <h1>
-                {new Intl.NumberFormat('en', {
-                  currency: 'USD',
-                  style: 'currency',
-                }).format(Number(orderTotal.toFixed(2)))}
-              </h1>
+              <h1>$ {orderTotal.toFixed(2)}</h1>
             </LabelWithPrice>
           </OrderTotal>
           <Button

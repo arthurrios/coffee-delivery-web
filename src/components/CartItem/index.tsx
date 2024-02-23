@@ -24,6 +24,8 @@ export function CartItem({ coffee }: CartItemProps) {
     removeItemFromCart(itemId)
   }
 
+  const itemTotal = (coffee.price * coffee.quantity).toFixed(2)
+
   return (
     <Container>
       <div>
@@ -44,7 +46,7 @@ export function CartItem({ coffee }: CartItemProps) {
           </ItemControls>
         </div>
       </div>
-      <span>$ {coffee.price.toFixed(2)}</span>
+      <span>$ {itemTotal}</span>
     </Container>
   )
 }

@@ -36,7 +36,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     const itemToIncrement = cart.find((item) => item.id === itemId)
 
     if (itemToIncrement?.id) {
-      itemToIncrement.quantity += 1
+      const newItemQuantity = (itemToIncrement.quantity += 1)
+
+      setCart((state) =>
+        state.map((item) => {
+          if (item.id === itemId) {
+            return { ...item, quantity: newItemQuantity }
+          } else {
+            return item
+          }
+        }),
+      )
     }
   }
 
@@ -44,7 +54,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     const itemToDecrement = cart.find((item) => item.id === itemId)
 
     if (itemToDecrement?.id && itemToDecrement.quantity > 1) {
-      itemToDecrement.quantity -= 1
+      const newItemQuantity = (itemToDecrement.quantity -= 1)
+
+      setCart((state) =>
+        state.map((item) => {
+          if (item.id === itemId) {
+            return { ...item, quantity: newItemQuantity }
+          } else {
+            return item
+          }
+        }),
+      )
     }
   }
 
