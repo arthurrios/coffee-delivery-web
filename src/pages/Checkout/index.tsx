@@ -66,7 +66,7 @@ export function Checkout() {
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isValid },
+    formState: { errors },
   } = newOrderForm
 
   const selectedPaymentMethod = watch('paymentMethod')
@@ -201,12 +201,7 @@ export function Checkout() {
               <h1>$ {orderTotal.toFixed(2)}</h1>
             </LabelWithPrice>
           </OrderTotal>
-          <Button
-            type="submit"
-            form="order"
-            disabled={!isValid}
-            title="confirm order"
-          />
+          <Button type="submit" form="order" title="confirm order" />
         </CartContainer>
       </div>
     </CheckoutContainer>
