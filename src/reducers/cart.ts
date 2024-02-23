@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { produce } from 'immer'
 import { Order } from '../contexts/CartContext'
 import { CartItemDTO } from '../dtos/CartItemDTO'
 import { ActionTypes } from './actions'
@@ -8,92 +10,58 @@ interface CartState {
 }
 
 export function cartReducer(state: CartState, action: any) {
-  let itemAlreadyAdded
-  let itemToIncrement
-  let itemToDecrement
-  let newOrder
-
   switch (action.type) {
     case ActionTypes.ADD_NEW_ITEM:
-      itemAlreadyAdded = state.cart.find(
-        (cartItem) => cartItem.id === action.payload.item.id,
-      )
-      if (itemAlreadyAdded) {
-        return {
-          ...state,
-          cart: state.cart.map((cartItem) =>
-            cartItem.id === action.payload.item.id
-              ? {
-                  ...cartItem,
-                  quantity: cartItem.quantity + action.payload.item.quantity,
-                }
-              : cartItem,
-          ),
+      return produce(state, (draft) => {
+        const itemAlreadyAdded = draft.cart.find(
+          (cartItem) => cartItem.id === action.payload.item.id,
+        )
+        if (itemAlreadyAdded) {
+          itemAlreadyAdded.quantity += action.payload.item.quantity
+        } else {
+          draft.cart.push(action.payload.item)
         }
-      } else {
-        return {
-          ...state,
-          cart: [...state.cart, action.payload.item],
-        }
-      }
+      })
     case ActionTypes.REMOVE_ITEM:
-      return {
-        ...state,
-        cart: state.cart.filter((item) => item.id !== action.payload.itemId),
-      }
+      return produce(state, (draft) => {
+        draft.cart = draft.cart.filter(
+          (item) => item.id !== action.payload.itemId,
+        )
+      })
     case ActionTypes.INCREASE_ITEM_QUANTITY:
-      itemToIncrement = state.cart.find(
-        (item) => item.id === action.payload.itemId,
-      )
+      return produce(state, (draft) => {
+        const itemToIncrement = draft.cart.find(
+          (item) => item.id === action.payload.itemId,
+        )
 
-      if (itemToIncrement) {
-        const newItemQuantity = (itemToIncrement.quantity += 1)
-
-        return {
-          ...state,
-          cart: state.cart.map((item) => {
-            if (item.id === action.payload.itemId) {
-              return { ...item, quantity: newItemQuantity }
-            } else {
-              return item
-            }
-          }),
+        if (itemToIncrement) {
+          itemToIncrement.quantity += 1
         }
-      }
-      break
+      })
     case ActionTypes.DECREASE_ITEM_QUANTITY:
-      itemToDecrement = state.cart.find(
-        (item) => item.id === action.payload.itemId,
-      )
+      return produce(state, (draft) => {
+        const itemToDecrement = draft.cart.find(
+          (item) => item.id === action.payload.itemId,
+        )
 
-      if (itemToDecrement) {
-        const newItemQuantity = (itemToDecrement.quantity -= 1)
-
-        return {
-          ...state,
-          cart: state.cart.map((item) => {
-            if (item.id === action.payload.itemId) {
-              return { ...item, quantity: newItemQuantity }
-            } else {
-              return item
-            }
-          }),
+        if (itemToDecrement) {
+          itemToDecrement.quantity -= 1
         }
-      }
-      break
+      })
 
     case ActionTypes.CHECKOUT_SUCCESS:
-      newOrder = {
-        ...action.payload.order,
-        id: new Date().getTime(),
-        items: state.cart,
-      }
+      return produce(state, (draft) => {
+        const newOrder = {
+          ...action.payload.order,
+          id: new Date().getTime(),
+          items: state.cart,
+        }
 
-      action.payload.callback(`/order/${newOrder.id}/success`)
-      return {
-        cart: [],
-        orders: [...state.orders, newOrder],
-      }
+        draft.orders.push(newOrder)
+        draft.cart = []
+
+        action.payload.callback(`/order/${newOrder.id}/success`)
+      })
 
     default:
       return state
