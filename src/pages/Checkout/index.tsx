@@ -19,7 +19,6 @@ import { Fragment } from 'react'
 import { CartItem } from '../../components/CartItem'
 
 import { Button } from '../../components/Button/index.tsx'
-import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -40,10 +39,10 @@ const newOrderFormValidationSchema = z.object({
   }),
 })
 
-type NewOrderFormData = z.infer<typeof newOrderFormValidationSchema>
+export type NewOrderFormData = z.infer<typeof newOrderFormValidationSchema>
 
 export function Checkout() {
-  const { cart } = useCart()
+  const { cart, checkout } = useCart()
 
   const { COLORS } = useTheme()
 
@@ -70,11 +69,12 @@ export function Checkout() {
     formState: { errors, isValid },
   } = newOrderForm
 
-  const navigate = useNavigate()
-
   const selectedPaymentMethod = watch('paymentMethod')
 
-  function handleConfirmOrder() {}
+  function handleConfirmOrder(data: NewOrderFormData) {
+    checkout(data)
+    reset()
+  }
 
   return (
     <CheckoutContainer>
@@ -205,7 +205,6 @@ export function Checkout() {
             type="submit"
             form="order"
             disabled={!isValid}
-            onClick={handleConfirmOrder}
             title="confirm order"
           />
         </CartContainer>

@@ -4,8 +4,6 @@ import { Home } from './pages/Home'
 import { Checkout } from './pages/Checkout'
 import { OrderConfirmed } from './pages/OrderConfirmed'
 
-export const AppRouteProps = {}
-
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -13,7 +11,10 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> },
       { path: '/checkout', element: <Checkout /> },
-      { path: '/order-confirmed', element: <OrderConfirmed /> },
+      {
+        path: '/order/:orderId/success',
+        element: <OrderConfirmed />,
+      },
     ],
   },
 ])

@@ -1,12 +1,21 @@
 import { ReactNode, createContext, useState } from 'react'
 import { CartItemDTO } from '../dtos/CartItemDTO'
+import { useNavigate } from 'react-router-dom'
+import { NewOrderFormData } from '../pages/Checkout'
+
+interface Order extends NewOrderFormData {
+  id: number
+  items: CartItemDTO[]
+}
 
 interface CartContextType {
   cart: CartItemDTO[]
+  orders: Order[]
   addNewItemToCart: (item: CartItemDTO) => void
   removeItemFromCart: (itemId: string) => void
   increaseItemQuantity: (itemId: string) => void
   decreaseItemQuantity: (itemId: string) => void
+  checkout: (newOrder: NewOrderFormData) => void
 }
 
 export const CartContext = createContext({} as CartContextType)
@@ -17,6 +26,9 @@ interface CartContextProviderProps {
 
 export function CartContextProvider({ children }: CartContextProviderProps) {
   const [cart, setCart] = useState<CartItemDTO[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
+
+  const navigate = useNavigate()
 
   function addNewItemToCart(item: CartItemDTO) {
     const itemAlreadyAdded = cart.find((cartItem) => cartItem.id === item.id)
@@ -68,14 +80,29 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     }
   }
 
+  function checkout(order: NewOrderFormData) {
+    const newOrder = {
+      ...order,
+      id: new Date().getTime(),
+      items: cart,
+    }
+    setOrders((state) => [...state, newOrder])
+
+    navigate(`/order/${newOrder.id}/success`)
+
+    setCart([])
+  }
+
   return (
     <CartContext.Provider
       value={{
         cart,
+        orders,
         addNewItemToCart,
         removeItemFromCart,
         increaseItemQuantity,
         decreaseItemQuantity,
+        checkout,
       }}
     >
       {children}
