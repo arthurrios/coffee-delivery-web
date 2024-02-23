@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useReducer } from 'react'
+import { ReactNode, createContext, useEffect, useReducer } from 'react'
 import { CartItemDTO } from '../dtos/CartItemDTO'
 import { useNavigate } from 'react-router-dom'
 import { NewOrderFormData } from '../pages/Checkout'
@@ -128,11 +128,28 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       return state
     },
     { cart: [], orders: [] },
+    (initialState) => {
+      const storedStateAsJSON = localStorage.getItem(
+        '@coffee-delivery:cart-state-1.0.0',
+      )
+
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
+      }
+
+      return initialState
+    },
   )
 
   const { cart, orders } = cartState
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cartState)
+
+    localStorage.setItem('@coffee-delivery:cart-state-1.0.0', stateJSON)
+  }, [cartState])
 
   function addNewItemToCart(item: CartItemDTO) {
     dispatch({
