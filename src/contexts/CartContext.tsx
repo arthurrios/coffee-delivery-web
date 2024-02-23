@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useReducer } from 'react'
 import { CartItemDTO } from '../dtos/CartItemDTO'
 import { useNavigate } from 'react-router-dom'
 import { NewOrderFormData } from '../pages/Checkout'
@@ -18,6 +18,11 @@ interface CartContextType {
   checkout: (newOrder: NewOrderFormData) => void
 }
 
+interface CartState {
+  cart: CartItemDTO[]
+  orders: Order[]
+}
+
 export const CartContext = createContext({} as CartContextType)
 
 interface CartContextProviderProps {
@@ -25,72 +30,154 @@ interface CartContextProviderProps {
 }
 
 export function CartContextProvider({ children }: CartContextProviderProps) {
-  const [cart, setCart] = useState<CartItemDTO[]>([])
-  const [orders, setOrders] = useState<Order[]>([])
+  const [cartState, dispatch] = useReducer(
+    (state: CartState, action: any) => {
+      let itemAlreadyAdded
+      let itemToIncrement
+      let itemToDecrement
+      let newOrder
+
+      switch (action.type) {
+        case 'ADD_NEW_ITEM':
+          itemAlreadyAdded = state.cart.find(
+            (cartItem) => cartItem.id === action.payload.item.id,
+          )
+          if (itemAlreadyAdded) {
+            return {
+              ...state,
+              cart: state.cart.map((cartItem) =>
+                cartItem.id === action.payload.item.id
+                  ? {
+                      ...cartItem,
+                      quantity:
+                        cartItem.quantity + action.payload.item.quantity,
+                    }
+                  : cartItem,
+              ),
+            }
+          } else {
+            return {
+              ...state,
+              cart: [...state.cart, action.payload.item],
+            }
+          }
+        case 'REMOVE_ITEM':
+          return {
+            ...state,
+            cart: state.cart.filter(
+              (item) => item.id !== action.payload.itemId,
+            ),
+          }
+        case 'INCREASE_ITEM_QUANTITY':
+          itemToIncrement = state.cart.find(
+            (item) => item.id === action.payload.itemId,
+          )
+
+          if (itemToIncrement) {
+            const newItemQuantity = (itemToIncrement.quantity += 1)
+
+            return {
+              ...state,
+              cart: state.cart.map((item) => {
+                if (item.id === action.payload.itemId) {
+                  return { ...item, quantity: newItemQuantity }
+                } else {
+                  return item
+                }
+              }),
+            }
+          }
+          break
+        case 'DECREASE_ITEM_QUANTITY':
+          itemToDecrement = state.cart.find(
+            (item) => item.id === action.payload.itemId,
+          )
+
+          if (itemToDecrement) {
+            const newItemQuantity = (itemToDecrement.quantity -= 1)
+
+            return {
+              ...state,
+              cart: state.cart.map((item) => {
+                if (item.id === action.payload.itemId) {
+                  return { ...item, quantity: newItemQuantity }
+                } else {
+                  return item
+                }
+              }),
+            }
+          }
+          break
+
+        case 'CHECKOUT_SUCCESS':
+          newOrder = {
+            ...action.payload.order,
+            id: new Date().getTime(),
+            items: state.cart,
+          }
+
+          action.payload.callback(`/order/${newOrder.id}/success`)
+          return {
+            cart: [],
+            orders: [...state.orders, newOrder],
+          }
+
+        default:
+          return state
+      }
+      return state
+    },
+    { cart: [], orders: [] },
+  )
+
+  const { cart, orders } = cartState
 
   const navigate = useNavigate()
 
   function addNewItemToCart(item: CartItemDTO) {
-    const itemAlreadyAdded = cart.find((cartItem) => cartItem.id === item.id)
-    if (itemAlreadyAdded) {
-      itemAlreadyAdded.quantity += item.quantity
-    } else {
-      setCart((state) => [...state, item])
-    }
+    dispatch({
+      type: 'ADD_NEW_ITEM',
+      payload: {
+        item,
+      },
+    })
   }
 
   function removeItemFromCart(itemId: string) {
-    const newCartItems = cart.filter((item) => item.id !== itemId)
-    setCart(newCartItems)
+    dispatch({
+      type: 'REMOVE_ITEM',
+      payload: {
+        itemId,
+      },
+    })
   }
 
   function increaseItemQuantity(itemId: string) {
-    const itemToIncrement = cart.find((item) => item.id === itemId)
-
-    if (itemToIncrement?.id) {
-      const newItemQuantity = (itemToIncrement.quantity += 1)
-
-      setCart((state) =>
-        state.map((item) => {
-          if (item.id === itemId) {
-            return { ...item, quantity: newItemQuantity }
-          } else {
-            return item
-          }
-        }),
-      )
-    }
+    dispatch({
+      type: 'INCREASE_ITEM_QUANTITY',
+      payload: {
+        itemId,
+      },
+    })
   }
 
   function decreaseItemQuantity(itemId: string) {
-    const itemToDecrement = cart.find((item) => item.id === itemId)
-
-    if (itemToDecrement?.id && itemToDecrement.quantity > 1) {
-      const newItemQuantity = (itemToDecrement.quantity -= 1)
-
-      setCart((state) =>
-        state.map((item) => {
-          if (item.id === itemId) {
-            return { ...item, quantity: newItemQuantity }
-          } else {
-            return item
-          }
-        }),
-      )
-    }
+    dispatch({
+      type: 'DECREASE_ITEM_QUANTITY',
+      payload: {
+        itemId,
+      },
+    })
   }
 
   function checkout(order: NewOrderFormData) {
-    const newOrder = {
-      ...order,
-      id: new Date().getTime(),
-      items: cart,
-    }
-    setOrders((state) => [...state, newOrder])
-
-    navigate(`/order/${newOrder.id}/success`)
-
-    setCart([])
+    dispatch({
+      type: 'CHECKOUT_SUCCESS',
+      payload: {
+        order,
+        callback: navigate,
+      },
+    })
   }
 
   return (
